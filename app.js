@@ -1,18 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+// create varibles
     const overlay = document.querySelector('#overlay');
     const qwerty = document.querySelector('#qwerty');
     const phrase = document.querySelector('#phrase');
     const ul = document.querySelector('#phraseUL');
+    const buttonStart = document.querySelector('.btn__start');
     const buttonReset = document.querySelector('.btn__reset');
     const hearts = document.querySelector('#hearts');
     const title = document.querySelector('h2.title');
     let missedGuesses = 0;
     var phrases = [
-        'A test run in time saves nine', 
-        'The early bird catches the code bugs', 
+        'Exceed Expectations', 
+        'JadePuma', 
         'There is no I in HTML',
-        'I regret that have but one life to give to JavaScript',
-        'Ask not what JavaScript will do for you but what you will do for JavaScript',
         'Let them eat CSS',
         'CSS',
         'HTML',
@@ -20,17 +21,45 @@ document.addEventListener('DOMContentLoaded', () => {
         'TreeHouse'
     ];
 
-    buttonReset.addEventListener('click', (e) => {
+// event listeners
+    buttonStart.addEventListener('click', (e) => {
         overlay.style.display = 'none';
+        buttonStart.style.display = 'none';
+        buttonReset.style.display = 'flex';
     });
 
+    buttonReset.addEventListener('click', (e) => {
+        overlay.style.display = 'none';
+        resetHearts();
+        resetKeyboard();
+        resetPhrase();
+        console.log(missedGuesses);
+    });
+
+    qwerty.addEventListener('click', (e) => {
+        if ( e.target.tagName === 'BUTTON') {
+            if ( e.target.className === 'chosen') {
+            } else {
+                let letter = e.target.innerHTML;
+                e.target.className = 'chosen';
+                let match = checkLetter(letter);
+                if ( match != letter ) {
+                    hearts.removeChild(hearts.lastElementChild);
+                    missedGuesses += 1;
+                };
+            };
+        };
+        checkWin();
+    }); 
+
+// functions
     function getRandomPhraseAsArray(array) {
         // get a phrase to use
         return array[Math.floor(Math.random() * array.length)];
     };
 
     function addPhraseToDisplay(text) {
-        // show the random phrase
+        // show the phrase framework
         for (let i = 0; i < text.length; i += 1) {
             let li = document.createElement('li');
             let character = text[i];
@@ -44,10 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ul.appendChild(li);
         }
     };
-
-    let randomPhrase = getRandomPhraseAsArray(phrases);
-
-    addPhraseToDisplay(randomPhrase);
 
     function checkLetter(button) {
         let lis = document.querySelectorAll('#character');
@@ -64,36 +89,42 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkWin() {
         let letters = document.querySelectorAll('.letter');
         let showing = document.querySelectorAll('.show');
-        if ( letters.length === showing.length ) {
-            console.log('win');
-            overlay.className = 'win';
+        function gameOver(state) {
             overlay.style.display = 'flex';
+            overlay.className = state;
+        };
+        if ( letters.length === showing.length ) {
+            gameOver('win');
             title.innerHTML = 'You Win!!!';
         };
         if ( missedGuesses > 4 ) {
-            console.log('lose');
-            overlay.className = 'lose';
-            overlay.style.display = 'flex';
+            gameOver('lose');
             title.innerHTML = 'Sorry, you lose';
         };
     };
-    
-    qwerty.addEventListener('click', (e) => {
-        if ( e.target.tagName === 'BUTTON') {
-            if ( e.target.className === 'chosen') {
-            } else {
-                let letter = e.target.innerHTML;
-                e.target.className = 'chosen';
-                let match = checkLetter(letter);
-                if ( match != letter ) {
-                    hearts.removeChild(hearts.lastElementChild);
-                    missedGuesses += 1;
-                };
-            };
-        };
-        checkWin();
-    });    
-    
 
+    function resetPhrase() {
+        while (ul.firstChild) {
+            ul.removeChild(ul.firstChild);
+        };
+        let randomPhrase = getRandomPhraseAsArray(phrases);
+        addPhraseToDisplay(randomPhrase);
+    };
+
+    function resetKeyboard() {
+        let chosen = document.querySelectorAll('.chosen');
+        for ( i = 0; i < chosen.length; i +=1 ) {
+            chosen[i].className = '';
+        };
+    };
+
+    function resetHearts() {
+        missedGuesses = 0;
+        hearts.innerHTML = '<li class="tries"><img src="images/liveHeart.png" height="35px" width="30px"></li><li class="tries"><img src="images/liveHeart.png" height="35px" width="30px"></li><li class="tries"><img src="images/liveHeart.png" height="35px" width="30px"></li><li class="tries"><img src="images/liveHeart.png" height="35px" width="30px"></li><li class="tries"><img src="images/liveHeart.png" height="35px" width="30px"></li>';
+    };
+
+// initial tasks
+    let randomPhrase = getRandomPhraseAsArray(phrases);
+    addPhraseToDisplay(randomPhrase);
 
 });

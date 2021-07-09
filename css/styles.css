@@ -77,10 +77,6 @@ button {
 
 /* Phrase */
 
-#phrase { 
-  max-width: 1200px;
-  margin: 0 auto;
-}
 .letter {
   font-size: var(--font-size-medium);
   font-family: sans-serif;
@@ -89,7 +85,6 @@ button {
   width: 65px;
   padding: 20px 1px 0 1px;
   margin-right: 2px;
-  margin-bottom: 5px;
   color: transparent;
   background: var(--color-neutral-light);
   border-radius: 5px;
@@ -138,12 +133,16 @@ button:hover {
   color: white;
 }
 
-.btn__reset {
+.btn__start, .btn__reset {
   padding: 8px;
   margin: 50px auto;
   background: #FFFFFF;
   border-radius: 5px;
   font-size: var(--font-size-medium);
+}
+
+.btn__reset {
+  display: none;
 }
 
 /* Overlay */
